@@ -3,6 +3,8 @@ import * as utility from './utils.js';
 import html5Provider from './providers/html5';
 import YouTubeProvider from './providers/youtube';
 
+
+
 export default ( function factory( global ) {
 
   if ( 'undefined' === typeof global.document ) {
@@ -261,6 +263,7 @@ export default ( function factory( global ) {
   }
 
   const prototype = vidim.prototype;
+
 
   /**
    * Initializes the instance and does the work common to all providers

@@ -6,7 +6,9 @@ import * as utility from '../utils.js';
  * Will be set to true once YouTube API is ready
  * @type {Boolean}
  */
-let isAPIReady = false;
+
+// Theme will always make sure api is ready before calling
+let isAPIReady = true;
 
 export default function( vidim ) {
 
@@ -37,8 +39,12 @@ export default function( vidim ) {
         this._listen();
 
       } else {
-
+        console.log('pre listener')
         window.addEventListener( 'vidimYouTubeAPIReady', () => {
+
+          console.log('vidimYouTubeAPIReady');
+
+          isAPIReady = true;
 
           utility.setDefaults( this._options, defaults );
 
@@ -522,48 +528,5 @@ export default function( vidim ) {
   };
 
   vidim.registerProvider( 'YouTube', vidimYouTubeProvider );
-
-}
-
-// Load the YouTube API
-const tag = document.createElement( 'script' );
-
-tag.src = 'https://www.youtube.com/iframe_api';
-
-document.querySelector( 'body' ).appendChild( tag );
-
-// Create our custom event
-const event = document.createEvent( 'Event' );
-
-event.initEvent( 'vidimYouTubeAPIReady', true, true );
-
-// Finaly, make sure we trigger that event once the API is ready
-if ( 'undefined' === typeof window.onYouTubeIframeAPIReady ) {
-
-  window.onYouTubeIframeAPIReady = function() {
-
-    window.vidimYouTubeAPIReady = true;
-
-    isAPIReady = true;
-
-    window.dispatchEvent( event );
-
-  };
-
-} else {
-
-  let oldOnYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady;
-
-  window.onYouTubeIframeAPIReady = function() {
-
-    oldOnYouTubeIframeAPIReady();
-
-    window.vidimYouTubeAPIReady = true;
-
-    isAPIReady = true;
-
-    window.dispatchEvent( event );
-
-  };
 
 }

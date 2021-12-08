@@ -1,10 +1,3 @@
-/* 
- * vidim v1.0.1
- * 2018-08-24T13:55:53.385Z
- * https://github.com/OriginalEXE/vidim 
- * 
- * Made by Ante Sepic 
- */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -128,6 +121,13 @@ Emitter.prototype.removeEventListener = function(event, fn){
       break;
     }
   }
+
+  // Remove event specific arrays for event types that no
+  // one is subscribed for to avoid memory leak.
+  if (callbacks.length === 0) {
+    delete this._callbacks['$' + event];
+  }
+
   return this;
 };
 
@@ -141,8 +141,13 @@ Emitter.prototype.removeEventListener = function(event, fn){
 
 Emitter.prototype.emit = function(event){
   this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
+
+  var args = new Array(arguments.length - 1)
     , callbacks = this._callbacks['$' + event];
+
+  for (var i = 1; i < arguments.length; i++) {
+    args[i - 1] = arguments[i];
+  }
 
   if (callbacks) {
     callbacks = callbacks.slice(0);
@@ -656,7 +661,9 @@ var html5Provider = function (vidim) {
  * Will be set to true once YouTube API is ready
  * @type {Boolean}
  */
-var isAPIReady = false;
+
+// Theme will always make sure api is ready before calling
+var isAPIReady = true;
 
 var YouTubeProvider = function (vidim) {
 
@@ -687,8 +694,12 @@ var YouTubeProvider = function (vidim) {
         this._constructPlayer();
         this._listen();
       } else {
-
+        console.log('pre listener');
         window.addEventListener('vidimYouTubeAPIReady', function () {
+
+          console.log('vidimYouTubeAPIReady');
+
+          isAPIReady = true;
 
           setDefaults(_this._options, defaults);
 
@@ -1107,45 +1118,6 @@ var YouTubeProvider = function (vidim) {
   vidim.registerProvider('YouTube', vidimYouTubeProvider);
 };
 
-// Load the YouTube API
-var tag = document.createElement('script');
-
-tag.src = 'https://www.youtube.com/iframe_api';
-
-document.querySelector('body').appendChild(tag);
-
-// Create our custom event
-var event = document.createEvent('Event');
-
-event.initEvent('vidimYouTubeAPIReady', true, true);
-
-// Finaly, make sure we trigger that event once the API is ready
-if ('undefined' === typeof window.onYouTubeIframeAPIReady) {
-
-  window.onYouTubeIframeAPIReady = function () {
-
-    window.vidimYouTubeAPIReady = true;
-
-    isAPIReady = true;
-
-    window.dispatchEvent(event);
-  };
-} else {
-
-  var oldOnYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady;
-
-  window.onYouTubeIframeAPIReady = function () {
-
-    oldOnYouTubeIframeAPIReady();
-
-    window.vidimYouTubeAPIReady = true;
-
-    isAPIReady = true;
-
-    window.dispatchEvent(event);
-  };
-}
-
 var index = ((function factory(global) {
 
   if ('undefined' === typeof global.document) {
@@ -1557,3 +1529,4 @@ var index = ((function factory(global) {
 return index;
 
 })));
+//# sourceMappingURL=vidim.js.map
