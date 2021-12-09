@@ -1,3 +1,10 @@
+/* 
+ * vidim v1.0.2
+ * 2021-12-09T02:37:59.486Z
+ * https://github.com/OriginalEXE/vidim 
+ * 
+ * Made by Ante Sepic 
+ */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -694,10 +701,7 @@ var YouTubeProvider = function (vidim) {
         this._constructPlayer();
         this._listen();
       } else {
-        console.log('pre listener');
         window.addEventListener('vidimYouTubeAPIReady', function () {
-
-          console.log('vidimYouTubeAPIReady');
 
           isAPIReady = true;
 
@@ -1529,4 +1533,3 @@ var index = ((function factory(global) {
 return index;
 
 })));
-//# sourceMappingURL=vidim.js.map

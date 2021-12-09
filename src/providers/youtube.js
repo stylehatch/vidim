@@ -39,10 +39,7 @@ export default function( vidim ) {
         this._listen();
 
       } else {
-        console.log('pre listener')
         window.addEventListener( 'vidimYouTubeAPIReady', () => {
-
-          console.log('vidimYouTubeAPIReady');
 
           isAPIReady = true;
 
